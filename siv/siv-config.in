@@ -1,0 +1,14 @@
+#!/bin/sh
+
+if [ "x$1" = "x--libexecdir" ]; then
+  echo "@pkglibexecdir@"
+fi
+if [ "x$1" = "x--libs" ]; then
+  echo ""
+fi
+if [ "x$1" = "x--cflags" ]; then
+  echo "-I@pkgincludedir@"
+fi
+if [ "x$1" = "x--version" ]; then
+  echo "@version@"
+fi

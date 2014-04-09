@@ -1,0 +1,48 @@
+- g_list -> my_list
+* big window を gdk に任せてみる。
+* dnd処理中は操作できないように。
+  → 単一アプリだから、操作は無理。
+* icon update の優先度は、後に expose が来たものを先に。
+- C-u で、新しいファイルを探す。
+- できれば、なくなったファイルの nail の削除もしたい。
+
+* viewer scroll
+- page up/down
+* spc/bs は viewer 上でも使えるように。
+* C-q は viewer 上でも使えるように。
+* C-q で終了
+* C-w で 1枚終了
+* titlebar に path。
+* icon は、
+   * まず wireframe で
+   * update 失敗で logo に
+   * update で dir なら folder に
+* alpha 対応
+*  →対応してみた。gifで確認。
+- icon を smoothing する?
+* 最初に表示されない…
+* ".." とかがない。
+* 移動したものは、いつ update する?
+  先にすればいいかな。個数は限られてるし。
+  → icon を作り直さないことにした。
+
+- pixbuf に property として何かくっつけるか?
+  longinfo, shortinfo, size, error info, ...
+  g_object_{set,get}_qdata
+
+- sivnailview の下に status bar
+  - 選択中 nail の情報。
+  - 複数選択時は ** files selected。
+
+- C-n で同じディレクトリの nailview をもう一枚。
+  → dnd めんどうになりそう。
+
+* image format を dll に。
+* fork していいのか?
+* dll を scan する dir。
+
+* siv.m4 で version check。
+
+* copyright 修正。
+
+// EOF

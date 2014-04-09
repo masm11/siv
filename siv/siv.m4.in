@@ -1,0 +1,104 @@
+#
+#
+
+AC_DEFUN([AC_SIV_CHECK], [
+
+AC_PATH_PROG(siv_config, siv-config)
+if test "x${siv_config}" = "x"; then
+  AC_MSG_ERROR([siv-config not found.])
+fi
+
+siv_min_version=ifelse([$1], ,@version@, $1)
+AC_MSG_CHECKING(for siv >= $siv_min_version)
+siv_cur_version=`${siv_config} --version`
+AC_LANG_PUSH(C)
+AC_RUN_IFELSE(
+  [AC_LANG_PROGRAM(
+    [#include <stdio.h>],[
+    const char *minver = "$siv_min_version";
+    const char *curver = "$siv_cur_version";
+    int min_v1, min_v2, min_v3;
+    int cur_v1, cur_v2, cur_v3;
+    int ok;
+    char c;
+    if (sscanf(minver, "%d.%d.%d%c", &min_v1, &min_v2, &min_v3, &c) == 3) {
+    } else {
+      if (sscanf(minver, "%d.%d%c", &min_v1, &min_v2, &c) == 2) {
+        min_v3 = 0;
+      } else {
+        if (sscanf(minver, "%d%c", &min_v1, &c) == 1) {
+          min_v2 = min_v3 = 0;
+        } else {
+          fprintf(stderr, "bad current version: %s\n", minver);
+          exit(1);
+        }
+      }
+    }
+    if (sscanf(curver, "%d.%d.%d%c", &cur_v1, &cur_v2, &cur_v3, &c) == 3) {
+    } else {
+      if (sscanf(curver, "%d.%d%c", &cur_v1, &cur_v2, &c) == 2) {
+        cur_v3 = 0;
+      } else {
+        if (sscanf(curver, "%d%c", &cur_v1, &c) == 1) {
+          cur_v2 = cur_v3 = 0;
+        } else {
+          fprintf(stderr, "bad minimum version: %s\n", curver);
+          exit(1);
+        }
+      }
+    }
+    ok = 0;
+    if (cur_v1 > min_v1)
+      ok = 1;
+    else if (cur_v1 == min_v1) {
+      if (cur_v2 > min_v2)
+        ok = 1;
+      else if (cur_v2 == min_v2) {
+        if (cur_v3 >= min_v3)
+          ok = 1;
+      }
+    }
+    return ok ? 0 : 1;
+  ])],
+  [AC_MSG_RESULT([yes])],
+  [AC_MSG_ERROR([no])]
+)
+AC_LANG_POP(C)
+
+AC_MSG_CHECKING([for siv cflags])
+siv_cflags="`${siv_config} --cflags`"
+AC_MSG_RESULT([${siv_cflags}])
+
+AC_MSG_CHECKING([for siv libs])
+siv_libs="`${siv_config} --libs`"
+AC_MSG_RESULT([${siv_libs}])
+
+AC_MSG_CHECKING([for siv libexecdir])
+AC_ARG_ENABLE(honor-siv-dir,
+AS_HELP_STRING([--disable-honor-siv-dir],
+ [disable for distcheck.]),
+[honor_siv_dir=${enableval}],
+[honor_siv_dir=yes])
+case "${honor_siv_dir}" in
+yes)
+  siv_libexecdir="`${siv_config} --libexecdir`"
+  if test "x${siv_libexecdir}" = "x"; then
+    AC_MSG_ERROR([siv-config does not report libexecdir.])
+  fi
+  ;;
+no)
+  siv_libexecdir='$(libexecdir)/siv'
+  ;;
+*)
+  AC_MSG_ERROR([bad honor-siv-dir])
+  ;;
+esac
+AC_MSG_RESULT([${siv_libexecdir}])
+
+AC_SUBST([siv_cflags])
+AC_SUBST([siv_libs])
+AC_SUBST([siv_libexecdir])
+
+])
+
+#
